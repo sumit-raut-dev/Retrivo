@@ -1,0 +1,13 @@
+# .NET
+RetrivoApi/bin/
+RetrivoApi/obj/
+RetrivoApi/appsettings.Development.json
+
+# Angular
+retrivo-frontend/node_modules/
+retrivo-frontend/dist/
+retrivo-frontend/.angular/
+
+# General
+.vs/
+*.user
