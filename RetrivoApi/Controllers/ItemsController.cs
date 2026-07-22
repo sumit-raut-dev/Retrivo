@@ -75,13 +75,13 @@ public class ItemsController : ControllerBase
         var resolvedItems = await _context.Items.CountAsync(i => i.Status == "Resolved");
         var activeUsers = await _context.Users.CountAsync();
 
-        var resolvedDurationsHours = await _context.Items
+        var resolvedDurations = await _context.Items
             .Where(i => i.Status == "Resolved" && i.UpdatedAt != null && i.CreatedAt != null)
-            .Select(i => EF.Functions.DateDiffHour(i.CreatedAt!.Value, i.UpdatedAt!.Value))
+            .Select(i => new { i.CreatedAt, i.UpdatedAt })
             .ToListAsync();
 
-        var avgRecoveryHours = resolvedDurationsHours.Count > 0
-            ? Math.Round(resolvedDurationsHours.Average(), 0)
+        var avgRecoveryHours = resolvedDurations.Count > 0
+            ? Math.Round(resolvedDurations.Average(x => (x.UpdatedAt!.Value - x.CreatedAt!.Value).TotalHours), 0)
             : 0;
 
         return Ok(new

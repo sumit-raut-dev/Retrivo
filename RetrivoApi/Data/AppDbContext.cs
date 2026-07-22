@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using RetrivoApi.Models;
@@ -32,7 +32,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.Name, "UQ__Categori__737584F6E3C1B167").IsUnique();
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.Name).HasMaxLength(50);
         });
 
@@ -45,7 +45,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.ClaimantEmail).HasMaxLength(150);
             entity.Property(e => e.ClaimantName).HasMaxLength(100);
             entity.Property(e => e.ClaimantPhone).HasMaxLength(20);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.Message).HasMaxLength(1000);
             entity.Property(e => e.PhotoUrl).HasMaxLength(500);
 
@@ -66,7 +66,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.Status, "IX_Items_Status");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.Description).HasMaxLength(1000);
             entity.Property(e => e.ItemType).HasMaxLength(10);
             entity.Property(e => e.Location).HasMaxLength(200);
@@ -75,7 +75,7 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(20)
                 .HasDefaultValue("Pending");
             entity.Property(e => e.Title).HasMaxLength(200);
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("now()");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Items)
                 .HasForeignKey(d => d.CategoryId)
@@ -94,7 +94,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.Email, "UQ__Users__A9D10534045EB887").IsUnique();
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
             entity.Property(e => e.Email).HasMaxLength(150);
             entity.Property(e => e.FullName).HasMaxLength(100);
             entity.Property(e => e.IsAdmin).HasDefaultValue(false);
