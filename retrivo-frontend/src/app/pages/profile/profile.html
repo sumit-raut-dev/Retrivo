@@ -1,0 +1,55 @@
+<div class="min-h-screen w-full bg-background flex flex-col relative text-foreground font-sans">
+
+  <main class="flex-1 max-w-2xl w-full mx-auto px-6 py-12">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold tracking-tight">Edit profile</h1>
+      <p class="text-xs text-muted-foreground mt-1.5">Update your account details and password</p>
+    </div>
+
+    <div class="bg-card border border-border rounded-2xl p-8 shadow-lg mb-6">
+      <h2 class="font-bold text-sm mb-5">Profile details</h2>
+      <form (ngSubmit)="saveProfile()" class="space-y-4">
+        <div>
+          <label class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Email</label>
+          <input type="email" [value]="auth.currentUser()?.email" disabled class="w-full bg-muted/50 border border-border rounded-lg px-4 py-3 text-xs text-muted-foreground cursor-not-allowed" />
+        </div>
+        <div>
+          <label class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Full name</label>
+          <input type="text" [(ngModel)]="fullName" name="fullName" class="w-full bg-muted border border-border rounded-lg px-4 py-3 text-xs focus:outline-none focus:border-primary transition-colors" required />
+        </div>
+        <div>
+          <label class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Phone (optional)</label>
+          <input type="tel" [(ngModel)]="phone" name="phone" class="w-full bg-muted border border-border rounded-lg px-4 py-3 text-xs focus:outline-none focus:border-primary transition-colors" />
+        </div>
+
+        <p *ngIf="profileError()" class="text-xs text-rose-400">{{ profileError() }}</p>
+        <p *ngIf="profileMessage()" class="text-xs text-emerald-400">{{ profileMessage() }}</p>
+
+        <button type="submit" [disabled]="profileSubmitting()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-primary to-ring text-white font-semibold text-xs hover:opacity-90 transition-opacity disabled:opacity-50">
+          {{ profileSubmitting() ? 'Saving…' : 'Save changes' }}
+        </button>
+      </form>
+    </div>
+
+    <div class="bg-card border border-border rounded-2xl p-8 shadow-lg">
+      <h2 class="font-bold text-sm mb-5">Change password</h2>
+      <form (ngSubmit)="savePassword()" class="space-y-4">
+        <div>
+          <label class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Current password</label>
+          <input type="password" [(ngModel)]="currentPassword" name="currentPassword" class="w-full bg-muted border border-border rounded-lg px-4 py-3 text-xs focus:outline-none focus:border-primary transition-colors" required />
+        </div>
+        <div>
+          <label class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">New password</label>
+          <input type="password" [(ngModel)]="newPassword" name="newPassword" class="w-full bg-muted border border-border rounded-lg px-4 py-3 text-xs focus:outline-none focus:border-primary transition-colors" required />
+        </div>
+
+        <p *ngIf="passwordError()" class="text-xs text-rose-400">{{ passwordError() }}</p>
+        <p *ngIf="passwordMessage()" class="text-xs text-emerald-400">{{ passwordMessage() }}</p>
+
+        <button type="submit" [disabled]="passwordSubmitting()" class="px-6 py-3 rounded-lg bg-muted border border-border text-xs font-semibold hover:bg-border transition-colors disabled:opacity-50">
+          {{ passwordSubmitting() ? 'Updating…' : 'Change password' }}
+        </button>
+      </form>
+    </div>
+  </main>
+</div>

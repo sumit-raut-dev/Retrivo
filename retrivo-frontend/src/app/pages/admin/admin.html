@@ -1,0 +1,142 @@
+<div class="min-h-screen w-full bg-background text-foreground font-sans">
+    <header
+        class="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 rounded-xl bg-rose-500 flex items-center justify-center">
+                <iconify-icon icon="lucide:shield" class="text-xl text-white"></iconify-icon>
+            </div>
+            <span class="text-xl font-bold tracking-tight">Retrivo admin</span>
+        </div>
+        <button (click)="logout()"
+            class="px-4 py-2 rounded-lg border border-border text-xs font-semibold hover:bg-muted transition-colors flex items-center gap-2">
+            <iconify-icon icon="lucide:log-out" class="text-sm"></iconify-icon> Log out
+        </button>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-10">
+        <h1 class="text-2xl font-bold mb-8">Dashboard</h1>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
+            <div class="bg-card border border-border rounded-xl p-4">
+                <p class="text-xs text-muted-foreground mb-1">Total items</p>
+                <p class="text-2xl font-bold">{{ stats().totalItems }}</p>
+            </div>
+            <div class="bg-card border border-border rounded-xl p-4">
+                <p class="text-xs text-muted-foreground mb-1">Open</p>
+                <p class="text-2xl font-bold text-cyan-400">{{ stats().openItems }}</p>
+            </div>
+            <div class="bg-card border border-border rounded-xl p-4">
+                <p class="text-xs text-muted-foreground mb-1">Pending</p>
+                <p class="text-2xl font-bold text-amber-400">{{ stats().pendingItems }}</p>
+            </div>
+            <div class="bg-card border border-border rounded-xl p-4">
+                <p class="text-xs text-muted-foreground mb-1">Resolved</p>
+                <p class="text-2xl font-bold text-emerald-400">{{ stats().resolvedItems }}</p>
+            </div>
+            <div class="bg-card border border-border rounded-xl p-4">
+                <p class="text-xs text-muted-foreground mb-1">Users</p>
+                <p class="text-2xl font-bold">{{ stats().totalUsers }}</p>
+            </div>
+            <div class="bg-card border border-border rounded-xl p-4">
+                <p class="text-xs text-muted-foreground mb-1">Claims</p>
+                <p class="text-2xl font-bold">{{ stats().totalClaims }}</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+            <div class="bg-card border border-border rounded-xl p-5">
+                <p class="text-xs font-semibold mb-3">Items by status</p>
+                <canvas #statusChart></canvas>
+            </div>
+            <div class="bg-card border border-border rounded-xl p-5">
+                <p class="text-xs font-semibold mb-3">Items by type</p>
+                <canvas #typeChart></canvas>
+            </div>
+            <div class="bg-card border border-border rounded-xl p-5 flex flex-col">
+                <p class="text-xs font-semibold mb-3">Items by category</p>
+                <div class="flex-1 min-h-0 h-[280px] lg:h-auto">
+                    <canvas #categoryChart></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-5 mb-10">
+            <p class="text-xs font-semibold mb-3">Monthly activity</p>
+            <canvas #activityChart></canvas>
+        </div>
+
+        <div class="flex items-center gap-2 mb-4 border-b border-border">
+            <button (click)="activeTab.set('items')"
+                class="px-4 py-2 text-xs font-semibold border-b-2 transition-colors"
+                [ngClass]="activeTab() === 'items' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'">Items</button>
+            <button (click)="activeTab.set('users')"
+                class="px-4 py-2 text-xs font-semibold border-b-2 transition-colors"
+                [ngClass]="activeTab() === 'users' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'">Users</button>
+        </div>
+
+        <div *ngIf="activeTab() === 'items'" class="bg-card border border-border rounded-xl overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead>
+                    <tr class="border-b border-border text-muted-foreground text-left">
+                        <th class="p-3">Title</th>
+                        <th class="p-3">Reporter</th>
+                        <th class="p-3">Category</th>
+                        <th class="p-3">Status</th>
+                        <th class="p-3">Claims</th>
+                        <th class="p-3">Date</th>
+                        <th class="p-3"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of pagedItems()" class="border-b border-border/60">
+                        <td class="p-3 font-medium">{{ item.title }}</td>
+                        <td class="p-3 text-muted-foreground">{{ item.reporterName }}</td>
+                        <td class="p-3 text-muted-foreground">{{ item.categoryName }}</td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 rounded-md border text-[10px] font-semibold"
+                                [ngClass]="statusClasses(item.status)">{{ item.status }}</span>
+                        </td>
+                        <td class="p-3 text-muted-foreground">{{ item.claimCount }}</td>
+                        <td class="p-3 text-muted-foreground">{{ item.createdAt | date:'mediumDate' }}</td>
+                        <td class="p-3 text-right">
+                            <button (click)="deleteItem(item.id)"
+                                class="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 hover:cursor-pointer transition-colors p-2 rounded-lg inline-flex items-center justify-center w-8 h-8">
+                                <iconify-icon icon="lucide:trash-2" class="text-lg"
+                                    style="width:1em;height:1em;display:block"></iconify-icon>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <app-pagination [currentPage]="itemsPage()" [totalItems]="items().length" [pageSize]="tablePageSize"
+                (pageChange)="itemsPage.set($event)"></app-pagination>
+            <p *ngIf="!loading() && items().length === 0" class="text-center text-muted-foreground py-8 text-xs">No
+                items yet.</p>
+        </div>
+
+        <div *ngIf="activeTab() === 'users'" class="bg-card border border-border rounded-xl overflow-x-auto">
+            <table class="w-full text-xs">
+                <thead>
+                    <tr class="border-b border-border text-muted-foreground text-left">
+                        <th class="p-3">Name</th>
+                        <th class="p-3">Email</th>
+                        <th class="p-3">Phone</th>
+                        <th class="p-3">Joined</th>
+                        <th class="p-3">Items reported</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of pagedUsers()" class="border-b border-border/60">
+                        <td class="p-3 font-medium">{{ user.fullName }}</td>
+                        <td class="p-3 text-muted-foreground">{{ user.email }}</td>
+                        <td class="p-3 text-muted-foreground">{{ user.phone || '—' }}</td>
+                        <td class="p-3 text-muted-foreground">{{ user.createdAt | date:'mediumDate' }}</td>
+                        <td class="p-3 text-muted-foreground">{{ user.reportedItemsCount }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <app-pagination [currentPage]="usersPage()" [totalItems]="users().length" [pageSize]="tablePageSize"
+                (pageChange)="usersPage.set($event)"></app-pagination>
+        </div>
+    </main>
+</div>

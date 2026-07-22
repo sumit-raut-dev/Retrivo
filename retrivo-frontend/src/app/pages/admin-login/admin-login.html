@@ -1,0 +1,52 @@
+<div class="min-h-screen w-full bg-background flex items-center justify-center px-6 text-foreground font-sans">
+    <div class="w-full max-w-md">
+        <div class="bg-card border border-border rounded-2xl p-8 shadow-lg">
+            <div class="flex flex-col items-center text-center mb-6">
+                <div class="w-14 h-14 rounded-xl bg-rose-500 flex items-center justify-center mb-4">
+                    <iconify-icon icon="lucide:shield" class="text-4xl text-white"></iconify-icon>
+                </div>
+                <h1 class="text-xl font-bold">Admin panel</h1>
+                <p class="text-xs text-muted-foreground mt-1">Sign in to access the admin dashboard</p>
+            </div>
+
+            <form (ngSubmit)="submit()" class="space-y-4">
+                <div>
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Username</label>
+                    <input type="text" [(ngModel)]="username" name="username" placeholder="Enter admin username"
+                        class="w-full bg-muted border border-border rounded-lg px-4 py-3 text-xs focus:outline-none focus:border-rose-500 transition-colors"
+                        required />
+                </div>
+                <div>
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Password</label>
+                    <div class="relative">
+                        <input [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="password" name="password"
+                            placeholder="Enter admin password"
+                            class="w-full bg-muted border border-border rounded-lg px-4 py-3 pr-10 text-xs focus:outline-none focus:border-rose-500 transition-colors"
+                            required />
+                        <button type="button" (click)="showPassword.set(!showPassword())"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
+                            <iconify-icon [icon]="showPassword() ? 'lucide:eye-off' : 'lucide:eye'"
+                                class="text-sm"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <p *ngIf="errorMessage()" class="text-xs text-rose-400">{{ errorMessage() }}</p>
+
+                <button type="submit" [disabled]="submitting()"
+                    class="w-full py-3 rounded-lg bg-rose-500 text-white font-semibold text-xs hover:opacity-90 transition-opacity disabled:opacity-50">
+                    {{ submitting() ? 'Signing in…' : 'Sign in as admin' }}
+                </button>
+            </form>
+
+            <div class="pt-5 mt-5 border-t border-border text-center">
+                <a routerLink="/login"
+                    class="text-xs text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1.5">
+                    <iconify-icon icon="lucide:arrow-left" class="text-sm"></iconify-icon> Back to student login
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,229 @@
+<div class="min-h-screen w-full bg-background flex flex-col relative text-foreground font-sans">
+    <main class="flex-1">
+        <section class="relative px-6 py-16 lg:py-24 flex flex-col items-center text-center overflow-hidden">
+            <div
+                class="absolute top-0 left-1/4 -translate-x-1/2 w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl pointer-events-none">
+            </div>
+            <div
+                class="absolute top-10 right-1/4 translate-x-1/2 w-[500px] h-[500px] bg-ring/20 rounded-full blur-3xl pointer-events-none">
+            </div>
+            <div
+                class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] h-[300px] bg-rose-500/10 rounded-full blur-3xl pointer-events-none">
+            </div>
+
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent border border-primary/20 text-primary text-xs font-medium mb-8">
+                <iconify-icon icon="lucide:sparkles" class="text-sm"></iconify-icon>
+                <span>Campus lost and found portal</span>
+            </div>
+
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight max-w-3xl mb-6 leading-tight relative z-10">
+                Lost something? <br />
+                <span class="bg-gradient-to-r from-primary via-purple-400 to-ring bg-clip-text text-transparent">We'll
+                    help you find it</span>
+            </h1>
+            <p class="text-muted-foreground text-sm md:text-base max-w-xl mb-12 leading-relaxed relative z-10">
+                A centralized platform for students to report and recover lost items within the university campus.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 mb-16 relative z-10">
+                <button routerLink="/report-item" [queryParams]="{ type: 'Lost' }"
+                    class="group px-8 py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 text-white font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-95 hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-xl hover:shadow-rose-500/40 transition-all duration-200 shadow-lg shadow-rose-500/20">
+                    Report lost item <iconify-icon icon="lucide:arrow-right"
+                        class="transition-transform duration-200 group-hover:translate-x-1"></iconify-icon>
+                </button>
+                <button routerLink="/report-item" [queryParams]="{ type: 'Found' }"
+                    class="group px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-95 hover:-translate-y-0.5 hover:scale-[1.03] hover:shadow-xl hover:shadow-emerald-400/40 transition-all duration-200 shadow-lg shadow-emerald-400/20">
+                    Report found item <iconify-icon icon="lucide:arrow-right"
+                        class="transition-transform duration-200 group-hover:translate-x-1"></iconify-icon>
+                </button>
+            </div>
+
+            <div class="group relative w-full max-w-2xl rounded-xl p-[1.5px]">
+
+                <!-- Gradient Border -->
+                <!-- <div
+                    class="absolute inset-0 rounded-xl bg-gradient-to-r from-primary via-purple-400 to-ring opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                </div> -->
+
+                <!-- Search Box -->
+                <div
+                    class="w-full max-w-2xl p-[1.5px] rounded-xl bg-gradient-to-r from-primary via-purple-400 to-ring relative z-10 hover:shadow-lg hover:shadow-primary/30 transition-shadow duration-200">
+                    <div class="bg-muted/95 backdrop-blur rounded-xl p-2 flex items-center gap-2">
+                        <div class="flex-1 flex items-center gap-3 pl-3">
+                            <iconify-icon icon="lucide:search" class="text-muted-foreground text-lg"></iconify-icon>
+                            <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+                                placeholder="Search for lost or found items"
+                                class="w-full bg-transparent text-sm focus:outline-none" />
+                        </div>
+                        <button (click)="onSearch()"
+                            class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-primary to-ring text-white font-medium text-sm hover:opacity-90 hover:-translate-y-0.5 transition-all duration-150">Search</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="border-y border-border bg-card/40 backdrop-blur py-12 px-6">
+            <div class="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4">
+                        <iconify-icon icon="lucide:layers" class="text-xl text-primary"></iconify-icon>
+                    </div>
+                    <span class="text-3xl font-bold" [appCountUp]="stats().totalItems" suffix="+"></span>
+                    <span class="text-xs text-muted-foreground mt-1">Items reported</span>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
+                        <iconify-icon icon="lucide:circle-check" class="text-xl text-emerald-400"></iconify-icon>
+                    </div>
+                    <span class="text-3xl font-bold" [appCountUp]="stats().resolvedItems" suffix="+"></span>
+                    <span class="text-xs text-muted-foreground mt-1">Items recovered</span>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-ring/10 border border-ring/20 flex items-center justify-center mb-4">
+                        <iconify-icon icon="lucide:user" class="text-xl text-ring"></iconify-icon>
+                    </div>
+                    <span class="text-3xl font-bold" [appCountUp]="stats().activeUsers" suffix="+"></span>
+                    <span class="text-xs text-muted-foreground mt-1">Active users</span>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4">
+                        <iconify-icon icon="lucide:clock" class="text-xl text-amber-400"></iconify-icon>
+                    </div>
+                    <span class="text-3xl font-bold" [appCountUp]="stats().avgRecoveryHours" suffix="hr"></span>
+                    <span class="text-xs text-muted-foreground mt-1">Avg. recovery time</span>
+                </div>
+            </div>
+        </section>
+
+        <section appScrollReveal class="max-w-6xl mx-auto py-16 px-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+                <div>
+                    <h2 class="text-2xl font-bold">Recent reports</h2>
+                    <p class="text-xs text-muted-foreground mt-1">Latest lost and found items reported by students</p>
+                </div>
+                <button routerLink="/browse"
+                    class="px-4 py-2 rounded-lg border border-border text-xs font-semibold flex items-center gap-2 hover:bg-muted transition-colors w-fit">
+                    View all items <iconify-icon icon="lucide:arrow-right" class="text-sm"></iconify-icon>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div *ngFor="let item of recentItems()"
+                    class="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 transition-all duration-150 ease-out shadow-md flex flex-col cursor-pointer"
+                    [routerLink]="['/items', item.id]">
+                    <div class="relative aspect-video bg-muted overflow-hidden">
+                        <img *ngIf="item.photoUrl" [src]="item.photoUrl" [alt]="item.title"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <span
+                            class="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase shadow"
+                            [ngClass]="item.itemType === 'Lost' ? 'bg-rose-500 text-white' : 'bg-emerald-500 text-white'">
+                            {{ item.itemType }}
+                        </span>
+                        <span
+                            class="absolute top-3 right-3 px-2 py-1 rounded-md text-[10px] font-semibold border flex items-center gap-1 backdrop-blur-sm"
+                            [ngClass]="statusClasses(item.status)">
+                            <iconify-icon [icon]="statusIcon(item.status)" class="text-xs"></iconify-icon> {{
+                            item.status }}
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-semibold group-hover:text-primary transition-colors line-clamp-1">{{
+                                item.title }}</h3>
+                            <p class="text-xs text-muted-foreground mt-1.5 line-clamp-2">{{ item.description }}</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-border/60">
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span
+                                    class="px-2.5 py-1 rounded-md bg-muted text-[10px] text-muted-foreground flex items-center gap-1">
+                                    <iconify-icon icon="lucide:tag" class="text-xs"></iconify-icon> {{ item.categoryName
+                                    }}
+                                </span>
+                                <span
+                                    class="px-2.5 py-1 rounded-md bg-muted text-[10px] text-muted-foreground flex items-center gap-1">
+                                    <iconify-icon icon="lucide:map-pin" class="text-xs"></iconify-icon> {{ item.location
+                                    }}
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-[11px] text-muted-foreground">
+                                <span class="flex items-center gap-1">
+                                    <iconify-icon icon="lucide:calendar" class="text-xs"></iconify-icon> {{
+                                    item.createdAt | date:'mediumDate' }}
+                                </span>
+                                <span>By {{ item.reporterName }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" appScrollReveal class="border-t border-border bg-card/20 py-16 px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold">How it works</h2>
+                    <p class="text-xs text-muted-foreground mt-2 max-w-lg mx-auto leading-relaxed">A simple 4-step
+                        process to report and recover lost items on campus.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div
+                        class="bg-card border border-border p-6 rounded-xl flex flex-col items-center text-center relative hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 transition-all duration-150 ease-out">
+                        <span
+                            class="absolute -top-3 px-3 py-1 rounded-full bg-primary/20 text-primary text-[10px] font-bold border border-primary/20">Step
+                            1</span>
+                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 mt-2">
+                            <iconify-icon icon="lucide:file" class="text-xl text-primary"></iconify-icon>
+                        </div>
+                        <h3 class="font-semibold text-sm">Report item</h3>
+                        <p class="text-xs text-muted-foreground mt-2 leading-relaxed">Fill out a form with details about
+                            the lost or found item, including location and description.</p>
+                    </div>
+                    <div
+                        class="bg-card border border-border p-6 rounded-xl flex flex-col items-center text-center relative hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 transition-all duration-150 ease-out">
+                        <span
+                            class="absolute -top-3 px-3 py-1 rounded-full bg-primary/20 text-primary text-[10px] font-bold border border-primary/20">Step
+                            2</span>
+                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 mt-2">
+                            <iconify-icon icon="lucide:search" class="text-xl text-primary"></iconify-icon>
+                        </div>
+                        <h3 class="font-semibold text-sm">Browse items</h3>
+                        <p class="text-xs text-muted-foreground mt-2 leading-relaxed">Search open reports by title,
+                            description, or location, and filter by category or type.</p>
+                    </div>
+                    <div
+                        class="bg-card border border-border p-6 rounded-xl flex flex-col items-center text-center relative hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 transition-all duration-150 ease-out">
+                        <span
+                            class="absolute -top-3 px-3 py-1 rounded-full bg-primary/20 text-primary text-[10px] font-bold border border-primary/20">Step
+                            3</span>
+                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 mt-2">
+                            <iconify-icon icon="lucide:message-circle" class="text-xl text-primary"></iconify-icon>
+                        </div>
+                        <h3 class="font-semibold text-sm">Submit a claim</h3>
+                        <p class="text-xs text-muted-foreground mt-2 leading-relaxed">Share your contact details in the
+                            claim form, and get the reporter's contact back right away.</p>
+                    </div>
+                    <div
+                        class="bg-card border border-border p-6 rounded-xl flex flex-col items-center text-center relative hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 transition-all duration-150 ease-out">
+                        <span
+                            class="absolute -top-3 px-3 py-1 rounded-full bg-primary/20 text-primary text-[10px] font-bold border border-primary/20">Step
+                            4</span>
+                        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 mt-2">
+                            <iconify-icon icon="lucide:circle-check" class="text-xl text-primary"></iconify-icon>
+                        </div>
+                        <h3 class="font-semibold text-sm">Recover item</h3>
+                        <p class="text-xs text-muted-foreground mt-2 leading-relaxed">Meet up, confirm the item, and
+                            mark the report resolved from your dashboard.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <app-footer></app-footer>
+</div>

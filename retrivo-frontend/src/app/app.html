@@ -1,0 +1,7 @@
+<div class="bg-background text-foreground font-sans min-h-screen">
+  <app-nav-header *ngIf="!hideNav()"></app-nav-header>
+
+  <div [@routeAnimations]="getAnimationState(outlet)" style="position: relative; min-height: 100vh;">
+    <router-outlet #outlet="outlet"></router-outlet>
+  </div>
+</div>

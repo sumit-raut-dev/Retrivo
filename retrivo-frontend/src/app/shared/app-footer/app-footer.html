@@ -1,0 +1,37 @@
+<footer class="border-t border-border bg-background pt-16 pb-8 px-6">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-ring flex items-center justify-center">
+          <iconify-icon icon="lucide:map-pin" class="text-sm text-white"></iconify-icon>
+        </div>
+        <span class="text-lg font-bold tracking-tight">Retrivo</span>
+      </div>
+      <p class="text-xs text-muted-foreground leading-relaxed">Helping students recover their belongings on campus.</p>
+    </div>
+    <div>
+      <h4 class="font-semibold text-xs uppercase tracking-wider mb-4">Quick links</h4>
+      <ul class="space-y-2.5 text-xs text-muted-foreground">
+        <li><a routerLink="/browse" class="hover:text-primary transition-colors">Browse items</a></li>
+        <li><a routerLink="/report-item" [queryParams]="{ type: 'Lost' }" class="hover:text-primary transition-colors">Report lost item</a></li>
+        <li><a routerLink="/report-item" [queryParams]="{ type: 'Found' }" class="hover:text-primary transition-colors">Report found item</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-semibold text-xs uppercase tracking-wider mb-4">Help and support</h4>
+      <ul class="space-y-2.5 text-xs text-muted-foreground">
+        <li><a routerLink="/" fragment="how-it-works" class="hover:text-primary transition-colors">How it works</a></li>
+        <li><a routerLink="/admin-login" class="hover:text-primary transition-colors">Admin panel</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-semibold text-xs uppercase tracking-wider mb-4">Contact us</h4>
+      <ul class="space-y-2.5 text-xs text-muted-foreground">
+        <li class="flex items-center gap-2"><iconify-icon icon="lucide:mail" class="text-sm text-primary"></iconify-icon><a href="mailto:support@retrivo.edu" class="hover:text-primary transition-colors">support&#64;retrivo.edu</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="max-w-6xl mx-auto pt-8 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+    <span>&copy; 2026 Retrivo. University campus.</span>
+  </div>
+</footer>

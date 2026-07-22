@@ -1,0 +1,15 @@
+<div *ngIf="totalPages > 1" class="flex items-center justify-center gap-1.5 mt-8">
+  <button (click)="goTo(currentPage - 1)" [disabled]="currentPage === 1" class="w-8 h-8 rounded-lg border border-border flex items-center justify-center text-xs hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+    <iconify-icon icon="lucide:chevron-left" class="text-sm"></iconify-icon>
+  </button>
+
+  <button *ngFor="let page of pageNumbers" (click)="goTo(page)"
+          class="w-8 h-8 rounded-lg text-xs font-semibold transition-colors"
+          [ngClass]="page === currentPage ? 'bg-primary text-white' : 'border border-border hover:bg-muted'">
+    {{ page }}
+  </button>
+
+  <button (click)="goTo(currentPage + 1)" [disabled]="currentPage === totalPages" class="w-8 h-8 rounded-lg border border-border flex items-center justify-center text-xs hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+    <iconify-icon icon="lucide:chevron-right" class="text-sm"></iconify-icon>
+  </button>
+</div>

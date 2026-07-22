@@ -1,0 +1,136 @@
+<div appPageEnter class="min-h-screen w-full bg-background flex flex-col relative text-foreground font-sans">
+    <main class="flex-1 max-w-2xl w-full mx-auto px-6 py-12">
+        <div class="text-center mb-8">
+            <div
+                class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 border border-primary/25">
+                <iconify-icon icon="lucide:pencil" class="text-xl text-primary"></iconify-icon>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight">Report a new item</h1>
+            <p class="text-xs text-muted-foreground mt-1.5">Provide details below to help other students identify it</p>
+        </div>
+
+        <div class="bg-card border border-border rounded-2xl p-8 shadow-lg"
+            *ngIf="auth.isLoggedIn(); else signInRequired">
+            <form (ngSubmit)="submit()" class="space-y-6">
+                <div>
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-2.5">Item
+                        type</label>
+                    <div class="grid grid-cols-2 gap-2 p-1.5 bg-muted rounded-xl border border-border">
+                        <button type="button" (click)="setItemType('Lost')"
+                            class="py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2"
+                            [ngClass]="itemType === 'Lost' ? 'bg-rose-500 text-white shadow' : 'text-muted-foreground hover:text-foreground'">
+                            <iconify-icon icon="lucide:circle-alert" class="text-sm"></iconify-icon> Lost item
+                        </button>
+                        <button type="button" (click)="setItemType('Found')"
+                            class="py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2"
+                            [ngClass]="itemType === 'Found' ? 'bg-emerald-500 text-white shadow' : 'text-muted-foreground hover:text-foreground'">
+                            <iconify-icon icon="lucide:circle-check" class="text-sm"></iconify-icon> Found item
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Item
+                        title</label>
+                    <input type="text" [(ngModel)]="title" name="title"
+                        placeholder="e.g., student card, blue water bottle"
+                        class="w-full bg-muted border border-border rounded-lg px-4 py-3 text-xs focus:outline-none focus:border-primary transition-colors"
+                        required />
+                </div>
+
+                <div>
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Category</label>
+                    <div class="relative category-dropdown-wrapper">
+                        <button type="button" (click)="toggleCategoryDropdown()"
+                            class="w-full bg-muted border border-border rounded-lg px-4 py-3 text-xs text-left flex items-center justify-between focus:outline-none focus:border-primary hover:border-primary/50 transition-colors">
+                            <span [ngClass]="categoryId ? 'text-foreground' : 'text-muted-foreground'">{{
+                                selectedCategoryName }}</span>
+                            <iconify-icon icon="lucide:chevron-down"
+                                class="text-muted-foreground text-xs transition-transform"
+                                [ngClass]="{'rotate-180': categoryDropdownOpen()}"></iconify-icon>
+                        </button>
+                        <div *ngIf="categoryDropdownOpen()"
+                            class="absolute custom-scroll top-full left-0 mt-1 w-full bg-card border border-border rounded-lg shadow-lg z-50 max-h-56 overflow-y-auto">
+                            <button *ngFor="let cat of categories()" type="button" (click)="selectCategory(cat)"
+                                class="w-full text-left px-4 py-2.5 text-xs hover:bg-muted transition-colors"
+                                [ngClass]="cat.id === categoryId ? 'text-primary font-semibold' : 'text-foreground'">
+                                {{ cat.name }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Location
+                        {{ itemType === 'Lost' ? 'lost' : 'found' }}</label>
+                    <div class="relative">
+                        <iconify-icon icon="lucide:map-pin"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"></iconify-icon>
+                        <input type="text" [(ngModel)]="location" name="location"
+                            placeholder="e.g., Campus Library, IT Admin Building"
+                            class="w-full bg-muted border border-border rounded-lg pl-11 pr-4 py-3 text-xs focus:outline-none focus:border-primary transition-colors"
+                            required />
+                    </div>
+                </div>
+
+                <div>
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Description</label>
+                    <textarea rows="4" [(ngModel)]="description" name="description"
+                        placeholder="Describe distinct features, color, brand, or markings"
+                        class="w-full bg-muted border border-border rounded-lg px-4 py-3 text-xs focus:outline-none focus:border-primary transition-colors resize-none"
+                        required></textarea>
+                </div>
+
+                <div>
+                    <label
+                        class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Upload
+                        photo (optional)</label>
+                    <label
+                        class="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center bg-muted/30 hover:bg-muted/60 transition-colors cursor-pointer relative">
+                        <input #fileInput type="file" accept="image/jpeg,image/png,image/webp" class="hidden"
+                            (change)="onFileSelected($event)" />
+                        <button *ngIf="photoPreview" type="button"
+                            (click)="removePhoto(fileInput); $event.preventDefault()"
+                            class="absolute top-2 right-2 w-6 h-6 rounded-full bg-background/90 border border-border flex items-center justify-center hover:bg-rose-500/20 hover:border-rose-500/40 transition-colors z-10">
+                            <iconify-icon icon="lucide:x" class="text-xs"></iconify-icon>
+                        </button>
+                        <img *ngIf="photoPreview" [src]="photoPreview" class="w-24 h-24 object-cover rounded-lg mb-3"
+                            alt="Preview" />
+                        <div *ngIf="!photoPreview"
+                            class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                            <iconify-icon icon="lucide:upload" class="text-lg text-primary"></iconify-icon>
+                        </div>
+                        <span class="text-xs font-semibold">{{ uploading() ? 'Uploading…' : (photoPreview ? 'Change
+                            photo' : 'Click to upload or drag and drop') }}</span>
+                        <span class="text-[10px] text-muted-foreground mt-1">jpg/png/webp only (max 5MB)</span>
+                    </label>
+                </div>
+
+                <p *ngIf="errorMessage()" class="text-xs text-rose-400">{{ errorMessage() }}</p>
+
+                <button type="submit" [disabled]="submitting() || uploading()"
+                    class="w-full py-3.5 rounded-lg bg-gradient-to-r from-primary to-ring text-white font-semibold text-xs hover:opacity-90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25 transition-all duration-150 shadow-md shadow-primary/20 disabled:opacity-50 disabled:hover:translate-y-0">
+                    {{ submitting() ? 'Reporting…' : 'Report item' }}
+                </button>
+            </form>
+        </div>
+        <ng-template #signInRequired>
+            <div class="bg-card border border-border rounded-2xl p-12 shadow-lg text-center">
+                <div class="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-5">
+                    <iconify-icon icon="lucide:log-in" class="text-2xl text-muted-foreground"></iconify-icon>
+                </div>
+                <h2 class="text-lg font-bold mb-2">Sign in required</h2>
+                <p class="text-xs text-muted-foreground mb-6">You need to sign in to submit a report.</p>
+                <button routerLink="/login" [queryParams]="{ returnUrl: '/report-item' }"
+                    class="px-8 py-3 rounded-lg bg-gradient-to-r from-primary to-ring text-white font-semibold text-xs hover:opacity-90 transition-opacity shadow-md shadow-primary/20">
+                    Sign in to continue
+                </button>
+            </div>
+        </ng-template>
+    </main>
+</div>

@@ -1,0 +1,78 @@
+<header
+    class="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center cursor-pointer" routerLink="/">
+        <div class="w-15 h-13 rounded-xl">
+            <img src="/logo1.png" alt="Logo" class="w-full h-full object-contain" />
+        </div>
+        <span class="text-2xl font-bold tracking-tight">Retrivo</span>
+    </div>
+
+    <nav class="hidden lg:flex items-center gap-8 text-sm font-medium">
+        <a routerLink="/" routerLinkActive="text-primary border-b-2 border-primary pb-1"
+            [routerLinkActiveOptions]="{exact:true}"
+            class="text-muted-foreground hover:text-foreground transition-colors">Home</a>
+        <a routerLink="/browse" routerLinkActive="text-primary border-b-2 border-primary pb-1"
+            class="text-muted-foreground hover:text-foreground transition-colors">Browse items</a>
+        <a routerLink="/report-item" [queryParams]="{ type: 'Lost' }"
+            routerLinkActive="text-primary border-b-2 border-primary pb-1"
+            [routerLinkActiveOptions]="{exact: true, queryParams: 'exact'}"
+            class="text-muted-foreground hover:text-foreground transition-colors">Report lost</a>
+        <a routerLink="/report-item" [queryParams]="{ type: 'Found' }"
+            routerLinkActive="text-primary border-b-2 border-primary pb-1"
+            [routerLinkActiveOptions]="{exact: true, queryParams: 'exact'}"
+            class="text-muted-foreground hover:text-foreground transition-colors">Report found</a>
+    </nav>
+
+
+    <div class="flex items-center gap-4">
+        <div class="relative hidden md:block w-64">
+            <iconify-icon icon="lucide:search"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"></iconify-icon>
+            <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()" placeholder="Search"
+                class="w-full bg-muted border border-border rounded-lg pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:border-primary transition-colors" />
+        </div>
+
+        <button *ngIf="!auth.isLoggedIn()" routerLink="/login"
+            class="px-5 py-2 rounded-lg bg-gradient-to-r from-primary to-ring text-white font-medium text-sm hover:opacity-90 transition-opacity">Sign
+            in</button>
+
+        <div class="flex items-center gap-2" *ngIf="auth.currentUser() as user">
+            <a routerLink="/dashboard" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                <div
+                    class="w-8 h-8 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center">
+                    <iconify-icon icon="lucide:user" class="text-primary text-sm"></iconify-icon>
+                </div>
+                <span class="text-xs font-semibold hidden sm:inline">{{ user.fullName.split(' ')[0] }}</span>
+            </a>
+            <button (click)="logout()" class="text-muted-foreground hover:text-rose-400 transition-colors ml-1"
+                aria-label="Log out">
+                <iconify-icon icon="lucide:log-out" class="text-base"></iconify-icon>
+            </button>
+
+            <button (click)="toggleMobileMenu()"
+                class="lg:hidden w-9 h-9 rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
+                aria-label="Toggle menu">
+                <iconify-icon [icon]="mobileMenuOpen() ? 'lucide:x' : 'lucide:menu'" class="text-lg"></iconify-icon>
+            </button>
+        </div>
+    </div>
+
+</header>
+
+<div *ngIf="mobileMenuOpen()" class="lg:hidden border-b border-border bg-background px-6 py-4 flex flex-col gap-1">
+    <a routerLink="/" (click)="closeMobileMenu()" routerLinkActive="text-primary bg-primary/10"
+        [routerLinkActiveOptions]="{exact:true}"
+        class="px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:bg-muted transition-colors">Home</a>
+    <a routerLink="/browse" (click)="closeMobileMenu()" routerLinkActive="text-primary bg-primary/10"
+        class="px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:bg-muted transition-colors">Browse items</a>
+    <a routerLink="/report-item" [queryParams]="{ type: 'Lost' }" (click)="closeMobileMenu()"
+        class="px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:bg-muted transition-colors">Report lost</a>
+    <a routerLink="/report-item" [queryParams]="{ type: 'Found' }" (click)="closeMobileMenu()"
+        class="px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:bg-muted transition-colors">Report found</a>
+    <div class="border-t border-border my-2"></div>
+    <a *ngIf="!auth.isLoggedIn()" routerLink="/login" (click)="closeMobileMenu()"
+        class="px-3 py-2.5 rounded-lg text-sm font-semibold text-primary hover:bg-muted transition-colors">Sign in</a>
+    <a *ngIf="auth.currentUser() as user" routerLink="/dashboard" (click)="closeMobileMenu()"
+        class="px-3 py-2.5 rounded-lg text-sm text-muted-foreground hover:bg-muted transition-colors">Dashboard ({{
+        user.fullName.split(' ')[0] }})</a>
+</div>

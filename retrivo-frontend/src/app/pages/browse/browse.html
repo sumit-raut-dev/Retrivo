@@ -1,0 +1,142 @@
+<div appPageEnter class="min-h-screen w-full bg-background flex flex-col relative text-foreground font-sans">
+    <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-12">
+        <div class="mb-10">
+            <h1 class="text-3xl font-bold tracking-tight">Browse items</h1>
+            <p class="text-xs text-muted-foreground mt-1.5">Search through all open lost and found items on campus</p>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-6 mb-8 shadow-md">
+            <h2 class="font-semibold text-sm flex items-center gap-2 mb-4">
+                <iconify-icon icon="lucide:search" class="text-primary text-base"></iconify-icon>
+                Search items
+            </h2>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex-1 relative">
+                    <iconify-icon icon="lucide:search"
+                        class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"></iconify-icon>
+                    <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+                        placeholder="Search by title, description, or location"
+                        class="w-full bg-muted border border-border rounded-lg pl-10 pr-4 py-3 text-xs placeholder:text-muted-foreground focus:outline-none focus:border-primary/80 transition-colors" />
+                </div>
+                <button (click)="onSearch()"
+                    class="px-6 py-3 rounded-lg bg-gradient-to-r from-primary to-ring text-white font-semibold text-xs flex items-center justify-center gap-2 hover:opacity-90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25 transition-all duration-150 shadow-md shadow-primary/25">
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-card border border-border rounded-xl p-5 mb-8 shadow-md">
+            <div class="flex items-center gap-2 font-semibold text-xs mb-4">
+                <iconify-icon icon="lucide:funnel" class="text-primary"></iconify-icon>
+                Filters
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1.5">
+                    <label
+                        class="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Category</label>
+                    <div class="relative category-dropdown-wrapper">
+                        <button type="button" (click)="toggleCategoryDropdown()"
+                            class="w-full bg-muted border border-border rounded-lg px-3 py-2.5 text-xs text-left flex items-center justify-between focus:outline-none focus:border-primary hover:border-primary/50 transition-colors">
+                            <span>{{ selectedCategoryName }}</span>
+                            <iconify-icon icon="lucide:chevron-down"
+                                class="text-muted-foreground text-xs transition-transform"
+                                [ngClass]="{'rotate-180': categoryDropdownOpen()}"></iconify-icon>
+                        </button>
+                        <div *ngIf="categoryDropdownOpen()"
+                            class="absolute custom-scroll top-full left-0 mt-1 w-full bg-card border border-border rounded-lg shadow-lg z-50 max-h-56 overflow-y-auto">
+                            <button type="button" (click)="selectCategoryFilter(null)"
+                                class="w-full text-left px-4 py-2.5 text-xs hover:bg-muted transition-colors"
+                                [ngClass]="selectedCategoryId === null ? 'text-primary font-semibold' : 'text-foreground'">All
+                                categories</button>
+                            <button *ngFor="let cat of categories()" type="button"
+                                (click)="selectCategoryFilter(cat.id)"
+                                class="w-full text-left px-4 py-2.5 text-xs hover:bg-muted transition-colors"
+                                [ngClass]="cat.id === selectedCategoryId ? 'text-primary font-semibold' : 'text-foreground'">{{
+                                cat.name }}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Item
+                        type</label>
+                    <div class="relative">
+                        <select [(ngModel)]="selectedItemType" (ngModelChange)="onFilterChange()"
+                            class="w-full bg-muted border border-border rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-primary appearance-none cursor-pointer">
+                            <option [ngValue]="null">All types</option>
+                            <option [ngValue]="'Lost'">Lost</option>
+                            <option [ngValue]="'Found'">Found</option>
+                        </select>
+                        <iconify-icon icon="lucide:list"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none text-xs"></iconify-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between mb-6">
+            <span class="text-xs font-semibold text-muted-foreground">Showing {{ items().length }} items</span>
+            <span class="text-xs text-primary font-medium flex items-center gap-1">
+                <iconify-icon icon="lucide:circle-check" class="text-sm"></iconify-icon> Only open items are listed
+            </span>
+        </div>
+
+        <div *ngIf="loading()" class="text-center text-sm text-muted-foreground py-16">Loading items…</div>
+
+        <div *ngIf="!loading() && items().length === 0" class="text-center py-16">
+            <p class="text-sm font-medium mb-1">No items match your search</p>
+            <p class="text-xs text-muted-foreground">Try a different keyword or adjust your filters.</p>
+        </div>
+
+        <div *ngIf="!loading() && items().length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div *ngFor="let item of pagedItems()"
+                class="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/40 transition-all shadow-md flex flex-col cursor-pointer"
+                [routerLink]="['/items', item.id]">
+                <div class="relative aspect-video bg-muted overflow-hidden">
+                    <img *ngIf="item.photoUrl" [src]="item.photoUrl" [alt]="item.title"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <span
+                        class="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase shadow"
+                        [ngClass]="item.itemType === 'Lost' ? 'bg-rose-500 text-white' : 'bg-emerald-500 text-white'">
+                        {{ item.itemType }}
+                    </span>
+                    <span
+                        class="absolute top-3 right-3 px-2 py-1 rounded-md text-[10px] font-semibold border flex items-center gap-1 backdrop-blur-sm"
+                        [ngClass]="statusClasses(item.status)">
+                        <iconify-icon [icon]="statusIcon(item.status)" class="text-xs"></iconify-icon> {{ item.status }}
+                    </span>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-semibold group-hover:text-primary transition-colors line-clamp-1">{{ item.title
+                            }}</h3>
+                        <p class="text-xs text-muted-foreground mt-1.5 line-clamp-2">{{ item.description }}</p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-border/60">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span
+                                class="px-2.5 py-1 rounded-md bg-muted text-[10px] text-muted-foreground flex items-center gap-1">
+                                <iconify-icon icon="lucide:file" class="text-xs"></iconify-icon> {{ item.categoryName }}
+                            </span>
+                            <span
+                                class="px-2.5 py-1 rounded-md bg-muted text-[10px] text-muted-foreground flex items-center gap-1">
+                                <iconify-icon icon="lucide:map-pin" class="text-xs"></iconify-icon> {{ item.location }}
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] text-muted-foreground">
+                            <span class="flex items-center gap-1">
+                                <iconify-icon icon="lucide:calendar" class="text-xs"></iconify-icon> {{ item.createdAt |
+                                date:'mediumDate' }}
+                            </span>
+                            <span>By {{ item.reporterName }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <app-pagination [currentPage]="currentPage()" [totalItems]="items().length" [pageSize]="pageSize"
+            (pageChange)="currentPage.set($event)"></app-pagination>
+    </main>
+
+    <app-footer></app-footer>
+</div>

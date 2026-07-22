@@ -1,0 +1,12 @@
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+@Component({
+  selector: 'app-footer',
+  standalone: true,
+  imports: [RouterLink],
+  templateUrl: './app-footer.html',
+  styleUrl: './app-footer.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+})
+export class AppFooter {}
