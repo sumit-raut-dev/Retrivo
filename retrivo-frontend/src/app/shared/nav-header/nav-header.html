@@ -33,7 +33,7 @@
         </div>
 
         <button *ngIf="!auth.isLoggedIn()" routerLink="/login"
-            class="px-5 py-2 rounded-lg bg-gradient-to-r from-primary to-ring text-white font-medium text-sm hover:opacity-90 transition-opacity">Sign
+            class="px-5 py-2 rounded-lg bg-gradient-to-r from-primary to-ring text-white font-medium text-sm hover:opacity-90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 transition-all duration-150">Sign
             in</button>
 
         <div class="flex items-center gap-2" *ngIf="auth.currentUser() as user">
@@ -48,13 +48,13 @@
                 aria-label="Log out">
                 <iconify-icon icon="lucide:log-out" class="text-base"></iconify-icon>
             </button>
-
-            <button (click)="toggleMobileMenu()"
-                class="lg:hidden w-9 h-9 rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
-                aria-label="Toggle menu">
-                <iconify-icon [icon]="mobileMenuOpen() ? 'lucide:x' : 'lucide:menu'" class="text-lg"></iconify-icon>
-            </button>
         </div>
+
+        <button (click)="toggleMobileMenu()"
+            class="lg:hidden w-9 h-9 rounded-lg flex items-center justify-center hover:bg-muted transition-colors"
+            aria-label="Toggle menu">
+            <iconify-icon [icon]="mobileMenuOpen() ? 'lucide:x' : 'lucide:menu'" class="text-lg"></iconify-icon>
+        </button>
     </div>
 
 </header>
