@@ -128,3 +128,12 @@ html {
     scrollbar-width: thin;
     scrollbar-color: #374151 transparent;
 }
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
