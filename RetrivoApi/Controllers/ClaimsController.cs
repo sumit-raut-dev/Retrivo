@@ -22,12 +22,17 @@ public class ClaimsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> SubmitClaim(CreateClaimDto dto)
     {
+        var claimantId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
         var item = await _context.Items
             .Include(i => i.Reporter)
             .FirstOrDefaultAsync(i => i.Id == dto.ItemId && i.Status == "Open");
 
         if (item == null)
             return NotFound(new { message = "Item not found or not available for claims" });
+
+        if (item.ReporterId == claimantId)
+            return BadRequest(new { message = "You cannot claim an item you reported yourself." });
 
         if (string.IsNullOrWhiteSpace(dto.ClaimantEmail) && string.IsNullOrWhiteSpace(dto.ClaimantPhone))
         {
