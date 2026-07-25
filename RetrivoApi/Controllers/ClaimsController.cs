@@ -19,7 +19,7 @@ public class ClaimsController : ControllerBase
     }
 
     [HttpPost]
-    [AllowAnonymous]
+    [Authorize]
     public async Task<IActionResult> SubmitClaim(CreateClaimDto dto)
     {
         var item = await _context.Items
