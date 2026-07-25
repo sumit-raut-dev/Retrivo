@@ -80,10 +80,15 @@
                         <iconify-icon icon="lucide:info" class="text-xl"></iconify-icon>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-sm">How the claim works</h3>
+                        <h3 class="font-semibold text-sm">
+                            {{ currentItem.itemType === 'Lost' ? 'How reporting a find works' : 'How the claim works' }}
+                        </h3>
                         <p class="text-xs text-muted-foreground mt-1 leading-relaxed">
-                            Describe the item to help confirm it's yours. Once you submit, the reporter's contact
-                            details are shared with you immediately so you can coordinate the return.
+                            {{ currentItem.itemType === 'Lost'
+                            ? "Let the owner know you found their item. Once you submit, their contact details are
+                            shared with you immediately so you can arrange the handover."
+                            : "Describe the item to help confirm it's yours. Once you submit, the reporter's contact
+                            details are shared with you immediately so you can coordinate the return." }}
                         </p>
                     </div>
                 </div>
@@ -101,22 +106,29 @@
                     class="bg-card border border-border rounded-2xl p-6 shadow-lg">
                     <div class="flex items-center gap-2 mb-4 pb-4 border-b border-border">
                         <iconify-icon icon="lucide:message-circle" class="text-primary"></iconify-icon>
-                        <h2 class="font-bold text-sm">Claim this item</h2>
+                        <h2 class="font-bold text-sm">
+                            {{ currentItem.itemType === 'Lost' ? 'I found this' : 'Claim this item' }}
+                        </h2>
                     </div>
 
                     <div *ngIf="!isLoggedIn" class="text-center py-6">
                         <iconify-icon icon="lucide:lock" class="text-2xl text-muted-foreground mb-2"></iconify-icon>
-                        <p class="text-xs text-muted-foreground mb-3">You need to be logged in to submit a claim.</p>
+                        <p class="text-xs text-muted-foreground mb-3">
+                            {{ currentItem.itemType === 'Lost' ? 'You need to be logged in to report that you found
+                            this.' : 'You need to be logged in to submit a claim.' }}
+                        </p>
                         <a routerLink="/login" [queryParams]="{ returnUrl: '/items/' + currentItem.id }"
                             class="inline-block px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold">
-                            Log in to claim
+                            {{ currentItem.itemType === 'Lost' ? 'Log in to continue' : 'Log in to claim' }}
                         </a>
                     </div>
 
                     <div *ngIf="isLoggedIn && isOwnItem" class="text-center py-6">
                         <iconify-icon icon="lucide:info" class="text-2xl text-muted-foreground mb-2"></iconify-icon>
-                        <p class="text-xs text-muted-foreground">You reported this item, so you can't submit a claim on
-                            it.</p>
+                        <p class="text-xs text-muted-foreground">
+                            {{ currentItem.itemType === 'Lost' ? "You reported this item, so you can't report finding
+                            it." : "You reported this item, so you can't submit a claim on it." }}
+                        </p>
                     </div>
 
                     <form *ngIf="isLoggedIn && !isOwnItem" (ngSubmit)="submitClaim()" class="space-y-4">
@@ -150,7 +162,7 @@
                             <label
                                 class="block text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-1.5">Message</label>
                             <textarea rows="3" [(ngModel)]="message" name="message"
-                                placeholder="Describe proof of ownership or where to meet"
+                                [placeholder]="currentItem.itemType === 'Lost' ? 'Describe where and when you found it, and how to arrange the handover' : 'Describe proof of ownership or where to meet'"
                                 class="w-full bg-muted border border-border rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-primary transition-colors resize-none"
                                 required></textarea>
                         </div>
@@ -181,7 +193,8 @@
 
                         <button type="submit" [disabled]="submitting()"
                             class="w-full py-3 rounded-lg bg-gradient-to-r from-primary to-ring text-white font-semibold text-xs hover:opacity-90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25 transition-all duration-150 shadow-md shadow-primary/20 disabled:opacity-50 disabled:hover:translate-y-0">
-                            {{ submitting() ? 'Submitting…' : 'Claim this item' }}
+                            {{ submitting() ? 'Submitting…' : (currentItem.itemType === 'Lost' ? 'I Found This' : 'Claim
+                            This Item') }}
                         </button>
                     </form>
                 </div>
@@ -190,7 +203,8 @@
                     class="bg-card border border-primary/30 rounded-2xl p-6 shadow-lg bg-gradient-to-b from-card to-accent/20">
                     <div class="flex items-center gap-2 mb-4 pb-4 border-b border-border text-emerald-400">
                         <iconify-icon icon="lucide:circle-check" class="text-base"></iconify-icon>
-                        <h2 class="font-bold text-sm">Claim submitted</h2>
+                        <h2 class="font-bold text-sm">{{ currentItem.itemType === 'Lost' ? 'Report submitted' : 'Claim
+                            submitted' }}</h2>
                     </div>
 
                     <div class="space-y-4">
