@@ -8,6 +8,7 @@ export interface Item {
   itemType: string;
   status: string;
   createdAt: string;
+  reporterId: number; 
   reporterName: string;
 }
 

@@ -1,12 +1,13 @@
 import { Component, OnInit, signal, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute} from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Items } from '../../core/services/items';
 import { Claims } from '../../core/services/claims';
 import { Item, ClaimSuccess } from '../../core/models/item.model';
 import { PageEnter } from '../../core/directives/page-enter';
 import { Upload } from '../../core/services/upload';
+import { Auth } from '../../core/services/auth';
 
 @Component({
   selector: 'app-item-detail',
@@ -36,7 +37,8 @@ export class ItemDetail implements OnInit {
     private route: ActivatedRoute,
     private itemsService: Items,
     private claimsService: Claims,
-    private uploadService: Upload
+    private uploadService: Upload,
+    public authService: Auth
   ) { }
 
   ngOnInit(): void {
@@ -53,6 +55,16 @@ export class ItemDetail implements OnInit {
   submitClaim(): void {
     const currentItem = this.item();
     if (!currentItem) return;
+
+    if (!this.isLoggedIn) {
+      this.submitError.set('Please log in to submit a claim.');
+      return;
+    }
+
+    if (this.isOwnItem) {
+      this.submitError.set("You can't claim your own item.");
+      return;
+    }
 
     if (!this.claimantEmail.trim() && !this.claimantPhone.trim()) {
       this.submitError.set('At least one contact method (email or phone) is required.');
@@ -75,7 +87,11 @@ export class ItemDetail implements OnInit {
         this.submitting.set(false);
       },
       error: err => {
-        this.submitError.set(err.error?.message || 'Something went wrong. Please try again.');
+        if (err.status === 401) {
+          this.submitError.set('Please log in to submit a claim.');
+        } else {
+          this.submitError.set(err.error?.message || 'Something went wrong. Please try again.');
+        }
         this.submitting.set(false);
       }
     });
@@ -107,6 +123,15 @@ export class ItemDetail implements OnInit {
     fileInput.value = '';
   }
 
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  get isOwnItem(): boolean {
+    const currentItem = this.item();
+    const user = this.authService.currentUser();
+    return !!currentItem && !!user && currentItem.reporterId === user.id;
+  }
 
 }
 

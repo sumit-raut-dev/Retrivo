@@ -112,6 +112,7 @@ public class ItemsController : ControllerBase
                 ItemType = i.ItemType,
                 Status = i.Status,
                 CreatedAt = i.CreatedAt ?? DateTime.MinValue,
+                ReporterId = i.ReporterId, 
                 ReporterName = i.Reporter!.FullName
             })
             .FirstOrDefaultAsync(i => i.Id == id);
